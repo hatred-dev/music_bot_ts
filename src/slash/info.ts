@@ -4,8 +4,8 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("skip")
-    .setDescription("Skips the current song."),
+    .setName("info")
+    .setDescription("Displays info about the current song."),
   run: async ({
     client,
     interaction,
@@ -15,13 +15,18 @@ module.exports = {
   }) => {
     const queue = client.player.getQueue(interaction.guildId!);
     if (!queue) return await interaction.editReply("Queue is empty");
-    const currentSong = queue.current;
-    queue.skip();
+    let bar = queue.createProgressBar({
+      length: 19,
+    });
+    const song = queue.current;
     await interaction.editReply({
       embeds: [
         new MessageEmbed()
-          .setDescription(`**${currentSong.title}** has been skipped.`)
-          .setThumbnail(currentSong.thumbnail),
+          .setThumbnail(song.thumbnail)
+          .setDescription(
+            `Currently playing **${song.title}|${song.url}**\n\n` +
+              `\`0:00\`${bar}\`${song.duration}\``
+          ),
       ],
     });
   },
