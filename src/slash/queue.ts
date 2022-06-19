@@ -25,7 +25,7 @@ module.exports = {
     interaction: CommandInteraction;
   }) => {
     const queue = client.player.getQueue(interaction.guildId);
-    if (!queue || queue.playing) {
+    if (!queue || !queue.playing) {
       return await interaction.editReply("Queue is empty");
     }
     const totalPages = Math.ceil(queue.tracks.length / 10) || 1;

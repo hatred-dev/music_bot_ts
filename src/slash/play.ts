@@ -44,6 +44,7 @@ module.exports = {
     if (!(interaction.member! as GuildMember).voice.channel)
       return interaction.editReply("You are not in vc");
     const queue = client.player.createQueue(interaction.guildId!);
+    queue.setBitrate(320);
     if (!queue.connection)
       await queue.connect((interaction.member! as GuildMember).voice.channel!);
     let embed = new MessageEmbed();
