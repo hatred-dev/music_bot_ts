@@ -19,13 +19,16 @@ module.exports = {
       length: 19,
     });
     const song = queue.current;
+    const timestamp = queue.getPlayerTimestamp();
     await interaction.editReply({
       embeds: [
         new MessageEmbed()
           .setThumbnail(song.thumbnail)
           .setDescription(
             `Currently playing **${song.title}|${song.url}**\n\n` +
-              `\`0:00\`${bar}\`${song.duration}\``
+              (song.duration === "0:00"
+                ? `\`Infinite\``
+                : `\`${timestamp.current}\`${bar}\`${song.duration}\``)
           ),
       ],
     });
