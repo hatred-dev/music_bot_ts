@@ -3,7 +3,7 @@ import {
   Client,
   CommandInteraction,
   GuildMember,
-  MessageEmbed
+  MessageEmbed,
 } from "discord.js";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
@@ -45,52 +45,58 @@ module.exports = {
       return interaction.editReply("You are not in vc");
     const queue = client.player.createQueue(interaction.guildId!);
     queue.setBitrate(320);
-    if (!queue.connection)
-      await queue.connect((interaction.member! as GuildMember).voice.channel!);
-    let embed = new MessageEmbed();
-    if (interaction.options.getSubcommand() === "song") {
-      let url = interaction.options.getString("url");
-      const result = await client.player.search(url!, {
-        requestedBy: interaction.user,
-        searchEngine: QueryType.YOUTUBE_VIDEO,
-      });
-      if (result.tracks.length === 0) {
-        return interaction.editReply("No results");
+    try {
+      if (!queue.connection) {
+        await queue.connect(
+          (interaction.member! as GuildMember).voice.channel!
+        );
       }
-      const song = result.tracks[0];
-      queue.addTrack(song);
-      embed
-        .setDescription(
-          `**${song.title}|${song.url}** has been added to the Queue`
-        )
-        .setThumbnail(song.thumbnail)
-        .setFooter({
-          text: `Duration: ${
-            song.duration === "0:00" ? "Stream" : song.duration
-          }`,
+      let embed = new MessageEmbed();
+      if (interaction.options.getSubcommand() === "song") {
+        let url = interaction.options.getString("url");
+        const result = await client.player.search(url!, {
+          requestedBy: interaction.user,
+          searchEngine: QueryType.YOUTUBE_VIDEO,
         });
-    } else if (interaction.options.getSubcommand() === "playlist") {
-      let url = interaction.options.getString("url");
-      const result = await client.player.search(url!, {
-        requestedBy: interaction.user,
-        searchEngine: QueryType.YOUTUBE_PLAYLIST,
-      });
-      if (result.tracks.length === 0) {
-        return interaction.editReply("No results");
+        if (result.tracks.length === 0) {
+          return interaction.editReply("No results");
+        }
+        const song = result.tracks[0];
+        queue.addTrack(song);
+        embed
+          .setDescription(
+            `**${song.title}|${song.url}** has been added to the Queue`
+          )
+          .setThumbnail(song.thumbnail)
+          .setFooter({
+            text: `Duration: ${song.duration === "0:00" ? "Stream" : song.duration
+              }`,
+          });
+      } else if (interaction.options.getSubcommand() === "playlist") {
+        let url = interaction.options.getString("url");
+        const result = await client.player.search(url!, {
+          requestedBy: interaction.user,
+          searchEngine: QueryType.YOUTUBE_PLAYLIST,
+        });
+        if (result.tracks.length === 0) {
+          return interaction.editReply("No results");
+        }
+        const playlist = result.playlist;
+        queue.addTracks(result.tracks);
+        embed
+          .setDescription(
+            `**${playlist!.title}|${playlist.url}** with **${playlist.tracks.length
+            } songs** has been added to the Queue`
+          )
+          .setThumbnail(playlist!.thumbnail);
       }
-      const playlist = result.playlist;
-      queue.addTracks(result.tracks);
-      embed
-        .setDescription(
-          `**${playlist!.title}|${playlist.url}** with **${
-            playlist.tracks.length
-          } songs** has been added to the Queue`
-        )
-        .setThumbnail(playlist!.thumbnail);
+      if (!queue.playing) await queue.play();
+      await interaction.editReply({
+        embeds: [embed],
+      });
+    } catch (error) {
+      queue.destroy();
+      console.log(error);
     }
-    if (!queue.playing) await queue.play();
-    await interaction.editReply({
-      embeds: [embed],
-    });
   },
 };
