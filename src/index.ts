@@ -67,7 +67,7 @@ if (LOAD_SLASH) {
       if (!slashcmd) interaction.reply("Not a valid slash command");
       await interaction.deferReply();
       await slashcmd.run({ client, interaction });
-      interaction.options.getSubcommand();
+      interaction.options.getSubcommand;
     }
     handleCommand();
   });
