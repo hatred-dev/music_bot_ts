@@ -2,3 +2,5 @@ node_modules
 .env
 importer-sorter.json
 prod
+package.lock
+yarn.lock
