@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, MessageEmbed } from "discord.js";
+import {ChatInputCommandInteraction, Client} from "discord.js";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
 
@@ -18,7 +18,7 @@ module.exports = {
     interaction,
   }: {
     client: Client;
-    interaction: CommandInteraction;
+    interaction: ChatInputCommandInteraction;
   }) => {
     const queue = client.player.getQueue(interaction.guildId!);
     if (!queue) return await interaction.editReply("Queue is empty");

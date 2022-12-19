@@ -1,12 +1,12 @@
-import { QueryType } from "discord-player";
+import {Playlist, QueryType} from "discord-player";
 import {
   Client,
-  CommandInteraction,
   GuildMember,
-  MessageEmbed,
+  EmbedBuilder, ChatInputCommandInteraction,
 } from "discord.js";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
+import {Thumbnail} from "youtube-sr";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -39,19 +39,19 @@ module.exports = {
     interaction,
   }: {
     client: Client;
-    interaction: CommandInteraction;
+    interaction: ChatInputCommandInteraction;
   }) => {
     if (!(interaction.member! as GuildMember).voice.channel)
       return interaction.editReply("You are not in vc");
     const queue = client.player.createQueue(interaction.guildId!);
-    queue.setBitrate(320);
+    await queue.setBitrate(320);
     try {
       if (!queue.connection) {
         await queue.connect(
           (interaction.member! as GuildMember).voice.channel!
         );
       }
-      let embed = new MessageEmbed();
+      let embed = new EmbedBuilder();
       if (interaction.options.getSubcommand() === "song") {
         let url = interaction.options.getString("url");
         const result = await client.player.search(url!, {
@@ -81,14 +81,15 @@ module.exports = {
         if (result.tracks.length === 0) {
           return interaction.editReply("No results");
         }
-        const playlist = result.playlist;
+        const playlist = result.playlist as Playlist;
         queue.addTracks(result.tracks);
         embed
           .setDescription(
             `**${playlist!.title}|${playlist.url}** with **${playlist.tracks.length
             } songs** has been added to the Queue`
           )
-          .setThumbnail(playlist!.thumbnail);
+            // I mean, idk why, idk for what reason, but let it be
+            .setThumbnail((playlist!.thumbnail as unknown as Thumbnail).url)
       }
       if (!queue.playing) await queue.play();
       await interaction.editReply({

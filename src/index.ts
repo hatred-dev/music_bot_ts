@@ -16,7 +16,7 @@ const CLIENT_ID = process.env.CLIENT_ID!;
 const GUILD_ID = process.env.GUILD_ID!;
 
 const client = new Discord.Client({
-  intents: ["GUILDS", "GUILD_VOICE_STATES"],
+  intents: ["Guilds", "GuildVoiceStates"],
 });
 
 client.slashcommands = new Discord.Collection();
@@ -67,7 +67,6 @@ if (LOAD_SLASH) {
       if (!slashcmd) interaction.reply("Not a valid slash command");
       await interaction.deferReply();
       await slashcmd.run({ client, interaction });
-      interaction.options.getSubcommand;
     }
     handleCommand();
   });

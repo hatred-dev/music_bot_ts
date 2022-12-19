@@ -1,11 +1,9 @@
 import {
+  ChatInputCommandInteraction,
   Client,
-  CommandInteraction,
-  Interaction,
-  MessageEmbed
+  EmbedBuilder,
+  SlashCommandBuilder,
 } from "discord.js";
-
-import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,7 +20,7 @@ module.exports = {
     interaction,
   }: {
     client: Client;
-    interaction: CommandInteraction;
+    interaction: ChatInputCommandInteraction;
   }) => {
     const queue = client.player.getQueue(interaction.guildId);
     if (!queue || !queue.playing) {
@@ -44,7 +42,7 @@ module.exports = {
     const currentSong = queue.current;
     await interaction.editReply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setDescription(
             `**Currently Playing**\n` +
             (currentSong

@@ -3,7 +3,7 @@ import { Collection } from "discord.js";
 
 declare module "discord.js" {
   export interface Client {
-    slashcommands: Collection<any, any>;
+    slashcommands: Collection<string, any>;
     player: Player;
   }
 }
