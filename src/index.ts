@@ -62,6 +62,7 @@ if (LOAD_SLASH) {
     client.on("interactionCreate", (interaction) => {
         async function handleCommand() {
             if (!interaction.isCommand()) return;
+            if (!interaction.isChatInputCommand()) return;
             const slashcmd = client.slashcommands.get(interaction.commandName);
             if (!slashcmd) interaction.reply("Not a valid slash command");
             await interaction.deferReply();
