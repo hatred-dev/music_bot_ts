@@ -68,7 +68,7 @@ if (LOAD_SLASH) {
             await slashcmd.run({client, interaction});
         }
 
-        handleCommand();
+        handleCommand().then();
     });
-    client.login(TOKEN);
+    client.login(TOKEN).then();
 }
