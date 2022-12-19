@@ -1,9 +1,9 @@
-import { Player } from "discord-player";
-import { Collection } from "discord.js";
+import {Player} from "discord-player";
+import {Collection} from "discord.js";
 
 declare module "discord.js" {
-  export interface Client {
-    slashcommands: Collection<string, any>;
-    player: Player;
-  }
+    export interface Client {
+        slashcommands: Collection<string, any>;
+        player: Player;
+    }
 }
