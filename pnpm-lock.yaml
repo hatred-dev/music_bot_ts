@@ -9,6 +9,7 @@ specifiers:
   discord-player: ^5.3.2
   discord.js: ^14.7.1
   dotenv: ^16.0.3
+  sodium-native: ^3.4.1
   soundcloud-scraper: ^5.0.3
   spotify-url-info: ^3.1.10
   typescript: ^4.9.4
@@ -24,6 +25,7 @@ dependencies:
   discord-player: 5.3.2_55iid2p4s3iwkct3gca6c6z2xq
   discord.js: 14.7.1
   dotenv: 16.0.3
+  sodium-native: 3.4.1
   soundcloud-scraper: 5.0.3
   spotify-url-info: 3.1.10
   typescript: 4.9.4
@@ -587,6 +589,11 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
+  /node-gyp-build/4.5.0:
+    resolution: {integrity: sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==}
+    hasBin: true
+    dev: false
+
   /nopt/5.0.0:
     resolution: {integrity: sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==}
     engines: {node: '>=6'}
@@ -714,6 +721,13 @@ packages:
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+    dev: false
+
+  /sodium-native/3.4.1:
+    resolution: {integrity: sha512-PaNN/roiFWzVVTL6OqjzYct38NSXewdl2wz8SRB51Br/MLIJPrbM3XexhVWkq7D3UWMysfrhKVf1v1phZq6MeQ==}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.5.0
     dev: false
 
   /soundcloud-scraper/5.0.3:
