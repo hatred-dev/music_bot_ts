@@ -27,7 +27,7 @@ client.player = new Player(client, {
     },
 });
 
-let commands = [];
+let commands: Discord.RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
 
 const slashFiles = fs
     .readdirSync(path.join(__dirname, "./slash"))
@@ -39,38 +39,40 @@ for (const file of slashFiles) {
     if (LOAD_SLASH) commands.push(slashcmd.data.toJSON());
 }
 
-if (LOAD_SLASH) {
-    const rest = new REST({version: "10"}).setToken(TOKEN);
-    console.log("deploying slash commands");
-    rest
-        .put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
-            body: commands,
-        })
-        .then(() => {
-            console.log("Successfully loaded");
-            process.exit(0);
-        })
-        .catch((err) => {
-            if (err) {
-                console.log(err);
-                process.exit(1);
-            }
-        });
-} else {
-    client.on("ready", () => {
-        console.log(`Logged in as ${client.user!!.tag}`);
-    });
-    client.on("interactionCreate", (interaction) => {
-        async function handleCommand() {
-            if (!interaction.isCommand()) return;
-            if (!interaction.isChatInputCommand()) return;
-            const slashcmd = client.slashcommands.get(interaction.commandName);
-            if (!slashcmd) interaction.reply("Not a valid slash command");
-            await interaction.deferReply();
-            await slashcmd.run({client, interaction});
-        }
+client.on("ready", () => {
+    console.log(`Logged in as ${client.user!!.tag}`);
+});
+client.on("interactionCreate", (interaction) => {
+    async function handleCommand() {
+        if (!interaction.isCommand()) return;
+        if (!interaction.isChatInputCommand()) return;
+        const slashcmd = client.slashcommands.get(interaction.commandName);
+        if (!slashcmd) interaction.reply("Not a valid slash command");
+        await interaction.deferReply();
+        await slashcmd.run({client, interaction});
+    }
 
-        handleCommand().then();
-    });
-    client.login(TOKEN).then();
-}
+    handleCommand().then();
+});
+client.login(TOKEN).then(() => {
+    if (LOAD_SLASH) {
+        const rest = new REST({version: "10"}).setToken(TOKEN);
+        console.log("deploying slash commands");
+        client.guilds.fetch().then(result => {
+            result.map(guild => {
+                rest
+                    .put(Routes.applicationGuildCommands(client.application.id, guild.id), {
+                        body: commands,
+                    })
+                    .then(() => {
+                        console.log(`Successfully loaded into ${guild.id}`);
+                    })
+                    .catch((err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    });
+            })
+        })
+    }
+});
