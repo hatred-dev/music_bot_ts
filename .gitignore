@@ -4,3 +4,5 @@ importer-sorter.json
 prod
 package.lock
 yarn.lock
+build.sh
+.idea

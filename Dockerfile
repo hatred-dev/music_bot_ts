@@ -1,11 +1,14 @@
 FROM node:current-alpine as builder
 WORKDIR /app
 RUN apk update
-RUN apk add opus-dev make gcc g++ automake libtool autoconf python3 libsodium curl
-RUN curl -fsSL "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" -o /bin/pnpm; chmod +x /bin/pnpm;
+RUN apk add opus-dev make gcc g++ automake libtool autoconf python3 libsodium-static
 COPY src src
 COPY types types
 COPY package.json pnpm-lock.yaml tsconfig.json ./
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="${PATH}:${PNPM_HOME}"
+RUN npm install --global pnpm
+RUN pnpm add node-gyp-build
 RUN pnpm install
 RUN pnpm run build
 

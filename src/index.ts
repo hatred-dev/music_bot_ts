@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import {REST} from "@discordjs/rest";
+import {SlashCommand} from "../types/slashcommand";
 
 dotenv.config();
 const TOKEN = process.env.TOKEN!;
@@ -33,7 +34,7 @@ const slashFiles = fs
     .filter((file) => file.endsWith(".js"));
 
 for (const file of slashFiles) {
-    const slashcmd = require(`./slash/${file}`);
+    const slashcmd = require(`./slash/${file}`) as SlashCommand;
     client.slashcommands.set(slashcmd.data.name, slashcmd);
     if (LOAD_SLASH) commands.push(slashcmd.data.toJSON());
 }
