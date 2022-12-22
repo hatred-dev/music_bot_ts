@@ -9,11 +9,7 @@ import {SlashCommand} from "../types/slashcommand";
 
 dotenv.config();
 const TOKEN = process.env.TOKEN!;
-
 const LOAD_SLASH = process.argv[2] == "load";
-
-const CLIENT_ID = process.env.CLIENT_ID!;
-const GUILD_ID = process.env.GUILD_ID!;
 
 const client = new Discord.Client({
     intents: ["Guilds", "GuildVoiceStates"],
